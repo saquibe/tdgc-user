@@ -145,11 +145,11 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="flex items-center justify-center">
       <div className="w-full max-w-md mx-auto">
         <form
           onSubmit={handleSubmit}
-          className="w-full space-y-4 p-6 bg-white rounded-lg shadow-md font-poppins"
+          className="w-full space-y-4 p-6 font-poppins"
         >
           <div className="text-center">
             <h1 className="text-3xl font-semibold text-[#00694A] mb-2">
@@ -212,9 +212,9 @@ export default function ResetPasswordPage() {
             {errors.password && (
               <p className="text-sm text-red-600 mt-1">{errors.password}</p>
             )}
-            <p className="text-xs text-gray-500 mt-1">
+            {/* <p className="text-xs text-gray-500 mt-1">
               Must include uppercase, lowercase, number & special character
-            </p>
+            </p> */}
           </div>
 
           {/* Confirm Password Input */}
@@ -307,7 +307,7 @@ export default function ResetPasswordPage() {
         </form>
 
         {/* Password Requirements */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        {/* <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <h3 className="text-sm font-medium text-gray-700 mb-2">
             Password Requirements:
           </h3>
@@ -353,7 +353,7 @@ export default function ResetPasswordPage() {
               One special character
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );
