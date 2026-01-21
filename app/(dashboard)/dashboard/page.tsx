@@ -1,7 +1,6 @@
-import React from 'react'
+//app/(dashboard)/dashboard/page.tsx
+import React from "react";
 
 export default function DashboardPage() {
-  return (
-    <div>DashboardPage</div>
-  )
+  return <div>DashboardPage</div>;
 }

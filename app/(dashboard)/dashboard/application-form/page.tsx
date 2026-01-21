@@ -1,3 +1,5 @@
+//app/(dashboard)/dashboard/application-form/page.tsx
+
 // 'use client';
 // import ApplicationForm from "@/app/components/dashboard/ApplicationForm";
 // // import MultiStepForm from "@/app/components/dashboard/ApplicationForm/MultiStepForm";
@@ -9,7 +11,7 @@
 //   </>
 // }
 
-'use client';
+"use client";
 
 import MultiStepForm from "@/app/components/dashboard/ApplicationForm/MultiStepForm";
 
@@ -17,7 +19,7 @@ import MultiStepForm from "@/app/components/dashboard/ApplicationForm/MultiStepF
 
 export default function ApplicationFormPage() {
   return (
-    <div >
+    <div>
       {/* <ApplicationForm /> */}
       <MultiStepForm />
     </div>
