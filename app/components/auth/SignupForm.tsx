@@ -290,9 +290,8 @@ export function SignupForm() {
       <div>
         <label className="block text-label mb-2">reCAPTCHA</label>
         <ReCAPTCHA
-          sitekey="6LdlELgrAAAAAHRHGEmAVyWPLBjsVqcUgQg3U3QT"
-          // sitekey="your_site_key_here"
-          onChange={(val) => setCaptcha(val)} // Update state on completion
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+          onChange={(val) => setCaptcha(val)}
         />
       </div>
 
