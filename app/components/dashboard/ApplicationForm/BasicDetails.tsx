@@ -6,17 +6,28 @@ import { z } from "zod";
 import axios from "axios";
 
 import {
-  Form, FormField, FormItem, FormLabel, FormControl, FormMessage,
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { basicDetailsSchema } from "@/lib/basicDetailsSchema";
 import {
-  Popover, PopoverTrigger, PopoverContent,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
@@ -28,7 +39,7 @@ type NextStepData = Step1FormValues & { registrationCategory?: string };
 interface Props {
   onNext: (data: NextStepData) => void;
   defaultValues?: Partial<Step1FormValues>;
-  basicUserInfo?: { email: string; mobile_number: string } | null;  // Add this
+  basicUserInfo?: { email: string; mobile_number: string } | null; // Add this
 
   onFileChange?: (name: string, file: File) => void;
 }
@@ -52,49 +63,58 @@ export default function BasicDetails({ onNext, defaultValues }: Props) {
 
   // 🔹 Fetch logged-in user's email & phone
   // Define what the API returns
-interface BasicProfileResponse {
-  success: boolean;
-  user: {
-    id: string;
-    full_name: string;
-    email: string;
-    mobile_number: string;
-  };
-}
+  interface BasicProfileResponse {
+    success: boolean;
+    user: {
+      id: string;
+      full_name: string;
+      email: string;
+      mobile_number: string;
+    };
+  }
 
-useEffect(() => {
-  const fetchBasicUser = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  useEffect(() => {
+    const fetchBasicUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      // 👇 Tell Axios what the response looks like
-      const res = await axios.get<BasicProfileResponse>(
-        "http://localhost:5000/api/auth/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+        // 👇 Tell Axios what the response looks like
+        const res = await axios.get<BasicProfileResponse>(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
-      const { email, mobile_number } = res.data.user;
-      setValue("email", email);
-      setValue("mobile_number", mobile_number);
-    } catch (error) {
-      console.error("Failed to fetch basic user info:", error);
-    }
-  };
+        const { email, mobile_number } = res.data.user;
+        setValue("email", email);
+        setValue("mobile_number", mobile_number);
+      } catch (error) {
+        console.error("Failed to fetch basic user info:", error);
+      }
+    };
 
-  fetchBasicUser();
-}, [setValue]);
+    fetchBasicUser();
+  }, [setValue]);
 
   // 🔹 Fetch categories & nationalities
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [categoriesRes, nationalitiesRes] = await Promise.all([
-          axios.get<FetchOptions[]>("http://localhost:5000/api/users/categories"),
-          axios.get<FetchOptions[]>("http://localhost:5000/api/users/nationalities"),
+          axios.get<FetchOptions[]>(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/users/categories`,
+          ),
+          axios.get<FetchOptions[]>(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/users/nationalities`,
+          ),
         ]);
+
+        // Debug: log the actual response
+        console.log("Categories response:", categoriesRes.data);
+        console.log("Nationalities response:", nationalitiesRes.data);
+
         setRegCategories(categoriesRes.data);
         setNationalities(nationalitiesRes.data);
       } catch (error) {
@@ -107,7 +127,9 @@ useEffect(() => {
   }, []);
 
   const onSubmit = (data: Step1FormValues) => {
-    const selectedCategory = regCategories.find(cat => cat._id === data.regcategory_id);
+    const selectedCategory = regCategories.find(
+      (cat) => cat._id === data.regcategory_id,
+    );
     if (selectedCategory) {
       onNext({ ...data, registrationCategory: selectedCategory.name });
     } else {
@@ -136,14 +158,17 @@ useEffect(() => {
                     Registration Category{" "}
                     <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="w-full cursor-pointer">
                       <SelectTrigger>
                         <SelectValue placeholder="Select Registration Category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {regCategories.map(cat => (
+                      {regCategories.map((cat) => (
                         <SelectItem key={cat._id} value={cat._id}>
                           {cat.name}
                         </SelectItem>
@@ -164,7 +189,11 @@ useEffect(() => {
                     First Name <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-full" placeholder="Enter your first name" />
+                    <Input
+                      {...field}
+                      className="w-full"
+                      placeholder="Enter your first name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -178,7 +207,11 @@ useEffect(() => {
                 <FormItem className="w-full">
                   <FormLabel>Middle Name</FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-full" placeholder="Enter your middle name" />
+                    <Input
+                      {...field}
+                      className="w-full"
+                      placeholder="Enter your middle name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -194,7 +227,11 @@ useEffect(() => {
                     Last Name <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-full" placeholder="Enter your last name" />
+                    <Input
+                      {...field}
+                      className="w-full"
+                      placeholder="Enter your last name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -209,7 +246,10 @@ useEffect(() => {
                   <FormLabel>
                     Gender <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="w-full cursor-pointer">
                       <SelectTrigger>
                         <SelectValue placeholder="Select Gender" />
@@ -235,7 +275,11 @@ useEffect(() => {
                     Father's Name <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-full" placeholder="Father's Name" />
+                    <Input
+                      {...field}
+                      className="w-full"
+                      placeholder="Father's Name"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -267,7 +311,11 @@ useEffect(() => {
                     Place<span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} className="w-full" placeholder="Place of birth" />
+                    <Input
+                      {...field}
+                      className="w-full"
+                      placeholder="Place of birth"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -289,7 +337,9 @@ useEffect(() => {
                           variant="outline"
                           className={`w-full justify-between text-left font-normal ${!field.value ? "text-muted-foreground" : ""}`}
                         >
-                          {field.value ? format(new Date(field.value), "dd/MM/yyyy") : "Select date"}
+                          {field.value
+                            ? format(new Date(field.value), "dd/MM/yyyy")
+                            : "Select date"}
                           <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -297,8 +347,12 @@ useEffect(() => {
                         <Calendar
                           mode="single"
                           captionLayout="dropdown"
-                          selected={field.value ? new Date(field.value) : undefined}
-                          onSelect={(date) => field.onChange(date?.toISOString())}
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
                           initialFocus
                         />
                       </PopoverContent>
@@ -317,14 +371,17 @@ useEffect(() => {
                   <FormLabel>
                     Nationality <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="w-full cursor-pointer">
                       <SelectTrigger>
                         <SelectValue placeholder="Select Nationality" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {nationalities.map(nat => (
+                      {nationalities.map((nat) => (
                         <SelectItem key={nat._id} value={nat._id}>
                           {nat.name}
                         </SelectItem>
@@ -344,17 +401,28 @@ useEffect(() => {
                   <FormLabel>
                     Category <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="w-full cursor-pointer">
                       <SelectTrigger>
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent >
-                      <SelectItem value="Open Category">Open Category</SelectItem>
-                      <SelectItem value="Backward Classes">Backward Classes</SelectItem>
-                      <SelectItem value="Scheduled Castes">Scheduled Castes</SelectItem>
-                      <SelectItem value="Scheduled Tribes">Scheduled Tribes</SelectItem>
+                    <SelectContent>
+                      <SelectItem value="Open Category">
+                        Open Category
+                      </SelectItem>
+                      <SelectItem value="Backward Classes">
+                        Backward Classes
+                      </SelectItem>
+                      <SelectItem value="Scheduled Castes">
+                        Scheduled Castes
+                      </SelectItem>
+                      <SelectItem value="Scheduled Tribes">
+                        Scheduled Tribes
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -391,7 +459,12 @@ useEffect(() => {
                     Mobile Number <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} type="tel" className="w-full" placeholder="Enter mobile number" />
+                    <Input
+                      {...field}
+                      type="tel"
+                      className="w-full"
+                      placeholder="Enter mobile number"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -443,7 +516,9 @@ useEffect(() => {
                       maxLength={10}
                       inputMode="text"
                       placeholder="e.g. AAAAA1234A"
-                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
                       className="w-full"
                     />
                   </FormControl>
@@ -490,7 +565,9 @@ useEffect(() => {
                       maxLength={12}
                       pattern="\d*"
                       placeholder="xxxx xxxx xxxx"
-                      onChange={(e) => field.onChange(e.target.value.replace(/\D/g, ""))}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.replace(/\D/g, ""))
+                      }
                       className="w-full"
                     />
                   </FormControl>
@@ -530,15 +607,22 @@ useEffect(() => {
                   <FormLabel>
                     Registration Type <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="w-full cursor-pointer">
                       <SelectTrigger>
                         <SelectValue placeholder="Select Registration Type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Regular (By Post - Fee includes postal charges)">Regular (By Post - Fee includes postal charges)</SelectItem>
-                      <SelectItem value="Tatkal (By Hand)">Tatkal (By Hand)</SelectItem>
+                      <SelectItem value="Regular (By Post - Fee includes postal charges)">
+                        Regular (By Post - Fee includes postal charges)
+                      </SelectItem>
+                      <SelectItem value="Tatkal (By Hand)">
+                        Tatkal (By Hand)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -571,7 +655,10 @@ useEffect(() => {
 
             {/* Submit */}
             <div className="md:col-span-2 flex justify-center pt-6">
-              <Button type="submit" className="bg-[#00694A] hover:bg-[#004d36] text-white">
+              <Button
+                type="submit"
+                className="bg-[#00694A] hover:bg-[#004d36] text-white"
+              >
                 Continue
               </Button>
             </div>
