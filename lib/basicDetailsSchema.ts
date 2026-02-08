@@ -1,16 +1,13 @@
 import * as z from "zod";
 
 export const basicDetailsSchema = z.object({
-  // Backend IDs are now optional for testing
-  regcategory_id: z.string().optional(),
-  nationality_id: z.string().optional(),
+  regcategory_id: z.string().min(1, "Registration category is required"),
+  nationality_id: z.string().min(1, "Nationality is required"),
 
-  // Personal Information
   f_name: z
     .string()
     .min(1, "First name is required")
-    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed")
-    .optional(),
+    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed"),
 
   m_name: z
     .string()
@@ -20,69 +17,66 @@ export const basicDetailsSchema = z.object({
   l_name: z
     .string()
     .min(1, "Last name is required")
-    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed")
-    .optional(),
+    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed"),
 
-  gender: z.enum(["Male", "Female", "Other"]).optional(),
+  gender: z.enum(["Male", "Female", "Other"], {
+    required_error: "Gender is required",
+  }),
 
   father_name: z
     .string()
     .min(1, "Father's Name is required")
-    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed")
-    .optional(),
+    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed"),
 
   mother_name: z
     .string()
     .min(1, "Mother's Name is required")
-    .regex(/^[a-zA-Z\s]*$/, "Only alphabets are allowed")
-    .optional(),
+    .regex(/^[a-zA-Z\s]+$/, "Only alphabets are allowed"),
 
-  place: z.string().optional(),
-  
-  dob: z.string().optional(),
+  place: z.string().min(1, "Place is required"),
+  dob: z.string().min(1, "Date of birth is required"),
 
-  category: z.enum(
-    ["Open Category", "Backward Classes", "Scheduled Castes", "Scheduled Tribes"]
-  ).optional(),
-  
-  // Contact Info
-  email: z.string().email("Invalid email format").optional(),
+  category: z.enum([
+    "Open Category",
+    "Backward Classes",
+    "Scheduled Castes",
+    "Scheduled Tribes",
+  ]),
+
+  email: z.string().email("Invalid email format"),
 
   mobile_number: z
     .string()
-    .min(10, "Mobile number must be 10 digits")
-    .max(10, "Mobile number must be 10 digits")
-    .regex(/^[0-9]+$/, "Only numbers are allowed")
-    .optional(),
+    .length(10, "Mobile number must be 10 digits")
+    .regex(/^[0-9]+$/, "Only numbers are allowed"),
 
   telephone_number: z
     .string()
     .regex(/^[0-9]*$/, "Only numbers are allowed")
     .optional(),
 
-  address: z.string().optional(),
+  address: z.string().min(10, "Address is required"),
 
-  // Identity Verification
   pan_number: z
     .string()
-    .min(1, "PAN number is required")
-    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
-      message: "Invalid PAN number (e.g. AAAAA1234A)",
-    })
-    .optional(),
+    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number"),
 
-  aadhaar_number: z
-    .string()
-    .min(1, "Aadhaar number is required")
-    .regex(/^\d{12}$/, "Aadhaar must be 12 digits")
-    .optional(),
+  aadhaar_number: z.string().regex(/^\d{12}$/, "Aadhaar must be 12 digits"),
 
-  regtype: z.enum(
-    ["Regular (By Post - Fee includes postal charges)", "Tatkal (By Hand)"]
-  ).optional(),
+  regtype: z.enum([
+    "Regular (By Post - Fee includes postal charges)",
+    "Tatkal (By Hand)",
+  ]),
 
-  // File Uploads are now optional for testing
-  pan_upload: z.custom<File>((file) => file instanceof File).optional(),
-  aadhaar_upload: z.custom<File>((file) => file instanceof File).optional(),
-  sign_upload: z.custom<File>((file) => file instanceof File).optional(),
+  pan_upload: z.custom<File>((file) => file instanceof File, {
+    message: "PAN PDF is required",
+  }),
+
+  aadhaar_upload: z.custom<File>((file) => file instanceof File, {
+    message: "Aadhaar PDF is required",
+  }),
+
+  sign_upload: z.custom<File>((file) => file instanceof File, {
+    message: "Signature PDF is required",
+  }),
 });
